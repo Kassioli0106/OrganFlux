@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  @apply bg-ink text-paper font-body antialiased;
+}
+
+/* Schematic node styling for React Flow */
+.rf-node {
+  position: relative;
+  min-width: 180px;
+  border-radius: 4px;
+  background: #1A1F27;
+  border: 1px solid #2B3340;
+  box-shadow: 0 1px 2px rgba(10,14,20,0.4), 0 8px 24px -8px rgba(10,14,20,0.5);
+  padding: 10px 14px;
+  font-family: 'Inter', sans-serif;
+}
+
+.rf-node::before,
+.rf-node::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border: 1.5px solid var(--corner-color, #4F7CFF);
+  opacity: 0.85;
+}
+.rf-node::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+.rf-node::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+.rf-node-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-bottom: 2px;
+}
+
+.rf-node-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 13.5px;
+  line-height: 1.3;
+}
+
+.rf-node-sub {
+  font-size: 11px;
+  color: #8A93A3;
+  margin-top: 4px;
+}
+
+.react-flow__edge-path {
+  stroke: #3A4356;
+  stroke-width: 1.6;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: #4F7CFF;
+}
+
+.react-flow__controls {
+  background: #1A1F27 !important;
+  border: 1px solid #2B3340 !important;
+  border-radius: 6px !important;
+  overflow: hidden;
+}
+.react-flow__controls-button {
+  background: #1A1F27 !important;
+  border-bottom: 1px solid #2B3340 !important;
+  fill: #F6F4EE !important;
+  color: #F6F4EE !important;
+}
+
+.react-flow__minimap {
+  background: #1A1F27 !important;
+  border: 1px solid #2B3340 !important;
+}
+
+.input {
+  @apply w-full bg-panel2 border border-line rounded px-2 py-1.5 text-xs focus:outline-none focus:border-signal;
+}
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #12161C; }
+::-webkit-scrollbar-thumb { background: #2B3340; border-radius: 8px; }
