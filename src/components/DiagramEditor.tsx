@@ -73,7 +73,7 @@ export default function DiagramEditor({
     (params: Connection) =>
       setEdges((eds) =>
         addEdge(
-          { ...params, markerEnd: { type: MarkerType.ArrowClosed, color: "#4F7CFF" }, animated: false },
+          { ...params, type: "smoothstep", markerEnd: { type: MarkerType.ArrowClosed, color: "#4F7CFF" }, animated: false },
           eds
         )
       ),
@@ -87,14 +87,30 @@ export default function DiagramEditor({
       position: { x: 0, y: 0 },
       data: { kind: n.kind, title: n.title, responsible: n.responsible }
     }));
-    const newEdges: Edge[] = result.edges.map((e) => ({
-      id: uuid(),
-      source: e.source,
-      target: e.target,
-      label: e.label,
-      markerEnd: { type: MarkerType.ArrowClosed, color: "#4F7CFF" },
-      style: e.label === "Não" || e.label === "NÃO" ? { stroke: "#E0644A" } : e.label === "Sim" || e.label === "SIM" ? { stroke: "#3FAE83" } : undefined
-    }));
+    const nodeById = new Map(newNodes.map((n) => [n.id, n]));
+    const nodeIndex = new Map(newNodes.map((n, i) => [n.id, i]));
+    const newEdges: Edge[] = result.edges.map((e) => {
+      const label = (e.label || "").trim().toLowerCase();
+      const isNo = label === "não" || label === "nao" || label === "no";
+      const isYes = label === "sim" || label === "yes";
+      const sourceIsDecision = nodeById.get(e.source)?.data?.kind === "decision";
+      // Ramos de decisão saem pela lateral (evita cruzar por cima de outros nós ao voltar).
+      const sourceHandle = sourceIsDecision ? (isNo ? "no" : isYes ? "yes" : undefined) : undefined;
+      const isBackEdge = (nodeIndex.get(e.target) ?? 0) <= (nodeIndex.get(e.source) ?? 0);
+      return {
+        id: uuid(),
+        source: e.source,
+        target: e.target,
+        sourceHandle,
+        label: e.label,
+        type: "smoothstep",
+        pathOptions: { borderRadius: 12, offset: isBackEdge ? 40 : 16 },
+        markerEnd: { type: MarkerType.ArrowClosed, color: isNo ? "#E0644A" : isYes ? "#3FAE83" : "#4F7CFF" },
+        style: isNo ? { stroke: "#E0644A" } : isYes ? { stroke: "#3FAE83" } : undefined,
+        labelStyle: { fill: "#F6F4EE", fontSize: 11, fontWeight: 600 },
+        labelBgStyle: { fill: "#1A1F27", fillOpacity: 0.9 }
+      };
+    });
     const laid = autoLayout(newNodes, newEdges, "TB");
     setNodes(laid.nodes);
     setEdges(laid.edges);
@@ -111,6 +127,8 @@ export default function DiagramEditor({
       id: uuid(),
       source: e.source,
       target: e.target,
+      type: "smoothstep",
+      pathOptions: { borderRadius: 12 },
       markerEnd: { type: MarkerType.ArrowClosed, color: "#4F7CFF" }
     }));
     const laid = autoLayout(newNodes, newEdges, "TB");
@@ -428,8 +446,8 @@ function EmptyState({ kind }: { kind: Kind }) {
       <div className="text-3xl opacity-50">{kind === "flowchart" ? "⌁" : "⌗"}</div>
       <div className="text-sm">
         {kind === "flowchart"
-          ? "Descreva um processo à esquerda ou clique em “+ elemento” para começar do zero."
-          : "Descreva a hierarquia à esquerda ou clique em “+ elemento” para começar do zero."}
+          ? "Descreva um processo à esquerda ou clique em "+ elemento" para começar do zero."
+          : "Descreva a hierarquia à esquerda ou clique em "+ elemento" para começar do zero."}
       </div>
     </div>
   );
