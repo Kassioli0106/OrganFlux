@@ -446,5 +446,9 @@ function EmptyState({ kind }: { kind: Kind }) {
       <div className="text-3xl opacity-50">{kind === "flowchart" ? "⌁" : "⌗"}</div>
       <div className="text-sm">
         {kind === "flowchart"
-                    ? 'Descreva um processo à esquerda ou clique em "+ elemento" para começar do zero.'
-          : 'Descreva a hierarquia à esquerda ou clique em "+ elemento" para começar do zero.'
+          ? "Descreva um processo à esquerda ou clique em + elemento para começar do zero."
+          : "Descreva a hierarquia à esquerda ou clique em + elemento para começar do zero."}
+      </div>
+    </div>
+  );
+}
