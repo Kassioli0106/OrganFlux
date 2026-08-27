@@ -1,0 +1,1 @@
+{"root":["./src/App.tsx","./src/main.tsx","./src/types.ts","./src/components/Dashboard.tsx","./src/components/DiagramEditor.tsx","./src/components/FlowNode.tsx","./src/components/OrgNode.tsx","./src/components/ProjectsList.tsx","./src/components/Sidebar.tsx","./src/lib/api.ts","./src/lib/layout.ts"],"version":"5.9.3"}
