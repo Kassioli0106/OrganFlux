@@ -1,26 +1,81 @@
-import dagre from "dagre";
-import type { Node, Edge } from "reactflow";
+export type FlowNodeKind =
+  | "start"
+  | "end"
+  | "process"
+  | "subprocess"
+  | "decision"
+  | "document"
+  | "database"
+  | "input"
+  | "output"
+  | "manual"
+  | "automatic"
+  | "approval"
+  | "rejection"
+  | "comment"
+  | "timer"
+  | "event";
 
-export function autoLayout(nodes: Node[], edges: Edge[], direction: "TB" | "LR" = "TB") {
-  const g = new dagre.graphlib.Graph();
-  g.setDefaultEdgeLabel(() => ({}));
-  g.setGraph({ rankdir: direction, nodesep: 110, ranksep: 130, ranker: "tight-tree" });
+export interface FlowNodeData {
+  kind: FlowNodeKind;
+  title: string;
+  responsible?: string;
+  department?: string;
+  notes?: string;
+  color?: string;
+}
 
-  const width = 200;
-  const height = 74;
+export interface OrgNodeData {
+  name: string;
+  role?: string;
+  department?: string;
+  email?: string;
+  phone?: string;
+  code?: string;
+}
 
-  nodes.forEach((n) => g.setNode(n.id, { width, height }));
-  edges.forEach((e) => g.setEdge(e.source, e.target));
+export interface AIFlowResult {
+  nodes: {
+    id: string;
+    kind: FlowNodeKind;
+    title: string;
+    responsible?: string;
+  }[];
+  edges: {
+    source: string;
+    target: string;
+    label?: string;
+  }[];
+  warnings?: string[];
+}
 
-  dagre.layout(g);
+export interface AIOrgResult {
+  nodes: {
+    id: string;
+    name: string;
+    role?: string;
+    department?: string;
+  }[];
+  edges: {
+    source: string;
+    target: string;
+  }[];
+}
 
-  const laidOut = nodes.map((n) => {
-    const pos = g.node(n.id);
-    return {
-      ...n,
-      position: { x: pos.x - width / 2, y: pos.y - height / 2 }
-    };
-  });
+export interface ProjectSummary {
+  id: string;
+  name: string;
+  type: "flowchart" | "orgchart";
+  author: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  version: number;
+}
 
-  return { nodes: laidOut, edges };
+export interface ProjectRecord extends ProjectSummary {
+  data: {
+    nodes: any[];
+    edges: any[];
+  };
 }
